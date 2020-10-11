@@ -22,8 +22,15 @@ typedef struct
 
 typedef struct
 {
+    Vector2 velocity, previousPos, projectedPos;
+} ComponentPhysics;
+
+typedef struct
+{
     ComponentTransform transform;
     ComponentSprite sprite;
+    ComponentPhysics physics;
+    int moveSpeed;
 } Player;
 
 Player player;
