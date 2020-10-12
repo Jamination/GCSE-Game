@@ -5,6 +5,8 @@
 #include "raymath.h"
 #include "data.c"
 
+#pragma region HelperMethods
+
 bool Vector2Equals(Vector2 a, Vector2 b)
 {
     return a.x == b.x && a.y == b.y;
@@ -31,49 +33,66 @@ void DrawSprite(ComponentSprite* sprite, ComponentTransform* transform)
     );
 }
 
+#pragma endregion
+
+#pragma region Player
+
 void LoadPlayer()
 {
     player = (Player){};
 
-    player.sprite.texture = LoadTexture("Content/Sprites/Shit.png");
-    player.sprite.colour = WHITE;
-    player.sprite.centered = true;
-
-    player.transform.x = 0;
-    player.transform.y = 0;
+    player.transform.x = ScreenWidth * .5f;
+    player.transform.y = ScreenHeight * .5f;
     player.transform.scale = .1f;
 
+    player.hitbox.width = 12;
+    player.hitbox.height = 18;
+
     player.moveSpeed = 1000;
+    player.jumpHeight = -1500;
+    player.gravity = 98;
 }
 
 void UpdatePlayer()
 {
     player.physics.previousPos = (Vector2){player.transform.x, player.transform.y};
 
-    Vector2 acceleration = (Vector2){};
+    Vector2 direction = (Vector2){};
 
     if (IsKeyDown(KEY_A))
-        acceleration.x--;
+        direction.x--;
     if (IsKeyDown(KEY_D))
-        acceleration.x++;
-    if (IsKeyDown(KEY_W))
-        acceleration.y--;
-    if (IsKeyDown(KEY_S))
-        acceleration.y++;
-    
-    if (!Vector2Equals(acceleration, Vector2Zero()))
-        acceleration = Vector2Normalize(acceleration);
+        direction.x++;
 
-    player.physics.velocity = Vector2Lerp(player.physics.velocity, Vector2Multiply(acceleration, player.moveSpeed), .5f);
+    player.physics.velocity.x = Lerp(player.physics.velocity.x, direction.x * player.moveSpeed, .25f);
+    player.physics.velocity.y += player.gravity;
+
+    if (IsKeyPressed(KEY_W))
+        player.physics.velocity.y = player.jumpHeight;
+
+    if (IsKeyReleased(KEY_W) && player.physics.velocity.y < 0)
+        player.physics.velocity.y *= .5f;
 
     player.transform.x += player.physics.velocity.x * GetFrameTime();
     player.transform.y += player.physics.velocity.y * GetFrameTime();
+
+    player.transform.x = Clamp(player.transform.x, 0, ScreenWidth - player.hitbox.width);
+
+    if (player.transform.y >= ScreenHeight - player.hitbox.height)
+    {
+        player.transform.y = ScreenHeight - player.hitbox.height;
+        player.physics.velocity.y = 0;
+    }
+    else if (player.transform.y <= 0)
+    {
+        player.transform.y = 0;
+        player.physics.velocity.y = 0;
+    }
+
     player.physics.projectedPos = (Vector2){player.transform.x, player.transform.y};
+    SetMousePosition(player.transform.x, player.transform.y);
 }
 
-void DrawPlayer()
-{
-    DrawSprite(&player.sprite, &player.transform);
-}
+#pragma endregion
 
 #endif

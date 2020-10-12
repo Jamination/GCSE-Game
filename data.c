@@ -6,11 +6,25 @@
 #define ScreenWidth 1280
 #define ScreenHeight 720
 
+typedef enum
+{
+    Undefined,
+    MainMenuScreen,
+    StartingScreen,
+} ScreenType;
+
+ScreenType CurrentScreen, NextScreen;
+
 typedef struct
 {
-    int x, y;
+    float x, y;
     float scale, rotation;
 } ComponentTransform;
+
+typedef struct
+{
+    float width, height;
+} ComponentHitbox;
 
 typedef struct
 {
@@ -28,9 +42,10 @@ typedef struct
 typedef struct
 {
     ComponentTransform transform;
-    ComponentSprite sprite;
     ComponentPhysics physics;
-    int moveSpeed;
+    ComponentHitbox hitbox;
+    int moveSpeed, jumpHeight;
+    float gravity;
 } Player;
 
 Player player;

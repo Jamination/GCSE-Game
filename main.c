@@ -16,7 +16,7 @@ void Update()
 
 void Draw()
 {
-    DrawPlayer();
+    DrawFPS(10, 10);
 }
 
 int main()
