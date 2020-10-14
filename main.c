@@ -1,21 +1,25 @@
-#ifndef MAIN_H
-#define MAIN_H
-
 #include "raylib.h"
 #include "functions.c"
 
-void Load()
+static void Load(void);
+static void Update(void);
+static void Draw(void);
+
+void Load(void)
 {
     LoadPlayer();
+    LoadBoxes();
 }
 
-void Update()
+void Update(void)
 {
     UpdatePlayer();
 }
 
-void Draw()
+void Draw(void)
 {
+    DrawBoxes();
+    DrawPlayer();
     DrawFPS(10, 10);
 }
 
@@ -39,5 +43,3 @@ int main()
 
     return 0;
 }
-
-#endif

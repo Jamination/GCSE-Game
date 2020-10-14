@@ -1,5 +1,4 @@
-#ifndef DATA_H
-#define DATA_H
+#pragma once
 
 #include "raylib.h"
 
@@ -36,18 +35,25 @@ typedef struct
 
 typedef struct
 {
-    Vector2 velocity, previousPos, projectedPos;
+    Vector2 velocity, lastPos, projectedPos;
 } ComponentPhysics;
 
 typedef struct
 {
     ComponentTransform transform;
+    ComponentSprite sprite;
     ComponentPhysics physics;
     ComponentHitbox hitbox;
     int moveSpeed, jumpHeight;
     float gravity;
 } Player;
 
-Player player;
+typedef struct
+{
+    ComponentTransform transform;
+    ComponentHitbox hitbox;
+    ComponentPhysics physics;
+} TestBox;
 
-#endif
+Player player;
+TestBox boxes[1];
